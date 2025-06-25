@@ -1,7 +1,8 @@
-import { BlogPost } from "@/types";
+import { Blog } from "@/types";
+import LatestBlogCard from "../ui/LatestBlogCard";
 
 
-const LatestBlogs = ({blogs} : {blogs : BlogPost[]}) => {
+const LatestBlogs = ({blogs} : {blogs : Blog[]}) => {
     return (
         <div>
             <h1 className="text-4xl text-center my-4">Latest Blog From <span className="text-accent">Blogiz</span></h1>
@@ -11,8 +12,10 @@ const LatestBlogs = ({blogs} : {blogs : BlogPost[]}) => {
               unlocking unprecedented computational power.
             </i>
           </p>
-          <div>
-            
+          <div className="grid grid-cols-2 gap-4 ">
+          {
+              blogs.map((blog) => (<LatestBlogCard key={blog.id} blog={blog}/>))
+          }
           </div>
         </div>
     );
