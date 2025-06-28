@@ -12,7 +12,7 @@ const BlogsPage = () => {
     // const blogs = await res.json();
 
 
-    const {data : blogs, isLoading,isError, error} = useGetBlogsQuery('')
+    const {data : blogs, } = useGetBlogsQuery('')
     console.log(blogs)
 
     return (

@@ -20,6 +20,12 @@ const BlogDetailPage = async ({ params }: PageProps) => {
   const res = await fetch(`http://localhost:5000/blogs/${params.blogId}`, {
     cache: 'no-store',
   });
+
+   if (!res.ok) {
+    // You can render a custom not found page or throw an error
+    return <div>Blog not found</div>;
+  }
+
   const blog = await res.json();
   return (
     <div>

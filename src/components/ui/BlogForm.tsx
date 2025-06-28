@@ -1,5 +1,6 @@
 "use client";
 
+import { createBlog } from "@/actions/create";
 import { useForm } from "react-hook-form";
 
 type FormValues = {
@@ -21,7 +22,18 @@ const CreateBlogForm = () => {
   } = useForm<FormValues>();
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data);
+   const res = await fetch("http://localhost:5000/blogs");
+   const blogs = await res.json();
+   data.id = JSON.stringify(blogs.length + 1);
+    data.total_likes = "100"; // Default likes to 0
+    try{
+       const res = await createBlog(data)
+       console.log("Blog created successfully:", res);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }catch(err : any){
+      console.error("Error creating blog:", err);
+      
+    }
   };
 
   return (
@@ -33,8 +45,8 @@ const CreateBlogForm = () => {
       <div className="hero min-h-screen">
         <div className="card w-[50%] shadow-xl bg-base-100">
           <form onSubmit={handleSubmit(onSubmit)} className="card-body">
-            <div className="form-control">
-              <label className="label">
+            <div className="form-control ">
+              <label className="label mr-16">
                 <span className="label-text">Title</span>
               </label>
               <input
@@ -46,7 +58,7 @@ const CreateBlogForm = () => {
               />
             </div>
             <div className="form-control">
-              <label className="label">
+              <label className="label pr-5">
                 <span className="label-text">Description</span>
               </label>
               <textarea
@@ -57,7 +69,7 @@ const CreateBlogForm = () => {
               />
             </div>
             <div className="form-control">
-              <label className="label">
+              <label className="label pr-3">
                 <span className="label-text">Publish Date</span>
               </label>
               <input
@@ -68,7 +80,7 @@ const CreateBlogForm = () => {
               />
             </div>
             <div className="form-control">
-              <label className="label">
+              <label className="label pr-2">
                 <span className="label-text">Author Name</span>
               </label>
               <input
@@ -80,7 +92,7 @@ const CreateBlogForm = () => {
               />
             </div>
             <div className="form-control">
-              <label className="label">
+              <label className="label pr-4">
                 <span className="label-text">Blog Image</span>
               </label>
               <input
