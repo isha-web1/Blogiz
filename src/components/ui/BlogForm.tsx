@@ -21,8 +21,10 @@ const CreateBlogForm = () => {
     formState: { errors },
   } = useForm<FormValues>();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL 
+
   const onSubmit = async (data: FormValues) => {
-   const res = await fetch("http://localhost:5000/blogs");
+   const res = await fetch(`${apiUrl}/blogs`);
    const blogs = await res.json();
    data.id = JSON.stringify(blogs.length + 1);
     data.total_likes = "100"; // Default likes to 0

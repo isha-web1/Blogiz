@@ -1,28 +1,36 @@
 import BlogDetails from "@/components/ui/BlogDetails";
 import { Blog } from "@/types";
 
-interface PageProps {
-  params: {
-    blogId: string;
-  };
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+if (!apiUrl) {
+  throw new Error("NEXT_PUBLIC_API_URL environment variable is not set!");
 }
 
 export const generateStaticParams = async () => {
-  const res = await fetch('http://localhost:5000/blogs');
-  const blogs: Blog[] = await res.json();
-
-  return blogs.slice(0, 3).map((blog: Blog) => ({
-    blogId: blog.id,
-  }));
+  try {
+    const res = await fetch(`${apiUrl}/blogs`);
+    if (!res.ok) return [];
+    const blogs: Blog[] = await res.json();
+    return blogs.slice(0, 3).map((blog: Blog) => ({
+      blogId: blog.id,
+    }));
+  } catch {
+    return [];
+  }
 };
 
-const BlogDetailPage = async ({ params }: PageProps) => {
-  const res = await fetch(`http://localhost:5000/blogs/${params.blogId}`, {
-    cache: 'no-store',
+// NOTE: params is a Promise!
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: Promise<{ blogId: string }>;
+}) {
+  const awaitedParams = await params;
+  const res = await fetch(`${apiUrl}/blogs/${awaitedParams.blogId}`, {
+    cache: "no-store",
   });
 
-   if (!res.ok) {
-    // You can render a custom not found page or throw an error
+  if (!res.ok) {
     return <div>Blog not found</div>;
   }
 
@@ -32,6 +40,4 @@ const BlogDetailPage = async ({ params }: PageProps) => {
       <BlogDetails blog={blog} />
     </div>
   );
-};
-
-export default BlogDetailPage;
+}
